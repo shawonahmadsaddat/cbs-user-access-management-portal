@@ -1,0 +1,2 @@
+import "./globals.css";import Link from "next/link";
+export default function Layout({children}:{children:React.ReactNode}){return <><header className="top"><div className="brand">CBS User Access Management Portal</div><div className="sub">Phase 1 • GitHub Testing • Integration Ready</div></header><nav className="nav"><Link href="/">Dashboard</Link><Link href="/requests/new">New Request</Link><Link href="/approvals">Approvals</Link><Link href="/ict">ICT</Link><Link href="/audit">Audit Trail</Link></nav>{children}</>}

@@ -1,0 +1,57 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+
+enum RequestStatus { DRAFT SUBMITTED SUPERVISOR_APPROVAL DIVISION_APPROVAL HR_APPROVAL PENDING_ICT ICT_CREATED ICT_VERIFIED COMPLETED RETURNED REJECTED }
+enum ApprovalStatus { PENDING APPROVED RETURNED REJECTED }
+
+model User {
+ id String @id
+ employeeId String @unique
+ name String
+ email String
+ department String
+ division String
+ role String
+ signatureUrl String?
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+}
+model AccessRequest {
+ id String @id @default(cuid())
+ requestNo String @unique
+ employeeId String
+ applicantName String
+ department String
+ division String
+ designation String
+ requestType String
+ status RequestStatus @default(DRAFT)
+ iTicketNo String?
+ finacleUserId String?
+ signatureStatus String?
+ payloadJson String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ approvals Approval[]
+ audits AuditLog[]
+}
+model Approval {
+ id String @id @default(cuid())
+ requestId String
+ approverId String
+ approverName String
+ stage String
+ status ApprovalStatus @default(PENDING)
+ remarks String?
+ actedAt DateTime?
+ request AccessRequest @relation(fields:[requestId],references:[id],onDelete: Cascade)
+}
+model AuditLog {
+ id String @id @default(cuid())
+ requestId String?
+ actorId String
+ action String
+ details String?
+ createdAt DateTime @default(now())
+ request AccessRequest? @relation(fields:[requestId],references:[id],onDelete: SetNull)
+}
